@@ -52,4 +52,10 @@ public class Present {
             execute(p);
         }
     }
+
+    public void setAlreadyGave(Player p) {
+        if ( alreadyGavePlayers.contains(p.getUniqueId()) ) {
+            alreadyGavePlayers.add(p.getUniqueId());
+        }
+    }
 }

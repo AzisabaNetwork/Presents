@@ -21,15 +21,30 @@ public class PlayerJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
 
-        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-            private final Player player = p;
+        boolean firstJoin = !p.hasPlayedBefore();
 
-            @Override
-            public void run() {
-                if ( player != null && player.isOnline() ) {
-                    container.getMatchPresents(player).forEach(present -> present.execute(player));
+        if ( firstJoin ) {
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                private final Player player = p;
+
+                @Override
+                public void run() {
+                    if ( player != null && player.isOnline() ) {
+                        container.getMatchPresents(player).forEach(present -> present.setAlreadyGave(player));
+                    }
                 }
-            }
-        }, 20L);
+            }, 20L);
+        } else {
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                private final Player player = p;
+
+                @Override
+                public void run() {
+                    if ( player != null && player.isOnline() ) {
+                        container.getMatchPresents(player).forEach(present -> present.execute(player));
+                    }
+                }
+            }, 20L);
+        }
     }
 }
