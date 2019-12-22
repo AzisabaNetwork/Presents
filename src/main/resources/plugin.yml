@@ -1,0 +1,12 @@
+name: ${project.name}
+main: net.azisaba.lgw.presents.Presents
+version: ${project.version}
+description: ${project.description}
+authosr: ["siloneco"]
+commands:
+  present:
+    usage: /present
+    permission: presents.command.present
+permissions:
+  presents.command.present:
+    default: op
