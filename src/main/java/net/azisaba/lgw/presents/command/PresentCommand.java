@@ -42,6 +42,8 @@ public class PresentCommand implements CommandExecutor {
 
     private final List<String> correctArgs = Arrays.asList("date", "command", "commands", "mode");
     private final JSONMessage helpMessage = JSONMessage.create(Chat.f("&b&m{0}", Strings.repeat("━", 50))).newline()
+            .then(Chat.f("&e/present list &7- &aプレゼントのリストを表示します")).suggestCommand("/present list").newline()
+            .then(Chat.f("&e/present info <名前> &7- &aプレゼントの詳細を表示します")).suggestCommand("/present info ").newline()
             .then(Chat.f("&e/present create <名前> &7- &aビルダーを作成します")).suggestCommand("/present create ").newline()
             .then(Chat.f("&e/present delete <名前> &7- &aプレゼントを削除します")).suggestCommand("/present delete ").newline()
             .then(Chat.f("&e/present build &7- &aビルダーからプレゼントを作成します")).suggestCommand("/present build").newline()
@@ -128,7 +130,7 @@ public class PresentCommand implements CommandExecutor {
             }
 
             container.removePresent(present);
-            p.sendMessage(Chat.f("&a正常に削除しました。"));
+            p.sendMessage(Chat.f("&aプレゼント&e{0}&aを正常に削除しました。", present.getName()));
             return true;
         }
 
@@ -187,7 +189,7 @@ public class PresentCommand implements CommandExecutor {
             }
         } else if ( args[0].equalsIgnoreCase("date") ) {
             if ( args.length < 3 ) {
-                p.sendMessage(Chat.f("&c使い方: /{0} date <yyyy/MM/dd hh:mm:ss>", label));
+                p.sendMessage(Chat.f("&c使い方: /{0} date <yyyy/MM/dd HH:mm:ss>", label));
                 return true;
             }
 
