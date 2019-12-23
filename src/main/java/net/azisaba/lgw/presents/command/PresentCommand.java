@@ -225,7 +225,7 @@ public class PresentCommand implements CommandExecutor {
     }
 
     private JSONMessage getCommandViewer(String label, List<String> commands) {
-        JSONMessage msg = JSONMessage.create(Chat.f("&b{0}", Strings.repeat("━", 20))).newline();
+        JSONMessage msg = JSONMessage.create(Chat.f("&b&m{0}", Strings.repeat("━", 50))).newline();
         for ( int i = 0; i < commands.size(); i++ ) {
             String cmd = commands.get(i);
             msg.then(Chat.f("&e{0}&a: &d{1} ", i, cmd));
@@ -236,7 +236,7 @@ public class PresentCommand implements CommandExecutor {
         if ( commands.size() <= 0 ) {
             msg.then(Chat.f("&cなし")).newline();
         }
-        msg.then(Chat.f("&b{0}", Strings.repeat("━", 20)));
+        msg.then(Chat.f("&b&m{0}", Strings.repeat("━", 50)));
 
         return msg;
     }
