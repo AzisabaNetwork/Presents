@@ -38,10 +38,10 @@ public class PresentCommand implements CommandExecutor {
 
     private final PresentContainer container;
     private final PresentFactory factory;
-    private HashMap<UUID, PresentBuilder> builders = new HashMap<>();
+    private final HashMap<UUID, PresentBuilder> builders = new HashMap<>();
 
     private final List<String> correctArgs = Arrays.asList("date", "command", "commands", "mode");
-    private JSONMessage helpMessage = JSONMessage.create(Chat.f("&b&m{0}", Strings.repeat("━", 50))).newline()
+    private final JSONMessage helpMessage = JSONMessage.create(Chat.f("&b&m{0}", Strings.repeat("━", 50))).newline()
             .then(Chat.f("&e/present create <名前> &7- &aビルダーを作成します")).suggestCommand("/present create ").newline()
             .then(Chat.f("&e/present delete <名前> &7- &aプレゼントを削除します")).suggestCommand("/present delete ").newline()
             .then(Chat.f("&e/present build &7- &aビルダーからプレゼントを作成します")).suggestCommand("/present build").newline()

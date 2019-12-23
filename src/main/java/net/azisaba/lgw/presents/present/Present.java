@@ -22,10 +22,10 @@ import lombok.Getter;
 public class Present {
 
     private final String name;
-    private Date date;
+    private final Date date;
 
-    private List<String> commands;
-    private DistributeMode mode;
+    private final List<String> commands;
+    private final DistributeMode mode;
 
     private final List<UUID> alreadyGavePlayers = new ArrayList<>();
 

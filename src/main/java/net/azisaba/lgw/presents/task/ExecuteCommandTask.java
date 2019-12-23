@@ -48,7 +48,7 @@ public class ExecuteCommandTask extends BukkitRunnable {
             }
 
             present.execute(new ArrayList<>(Bukkit.getOnlinePlayers()));
-            if (present.getMode() == DistributeMode.ONLINE ) {
+            if ( present.getMode() == DistributeMode.ONLINE ) {
                 plugin.getContainer().removePresent(present);
             }
 
@@ -72,9 +72,9 @@ public class ExecuteCommandTask extends BukkitRunnable {
         new ExecuteCommandTask(plugin, present).runTaskLater(plugin, remainingTicks);
 
         // このオブジェクトを削除
-        this.cancel();
+        cancel();
         try {
-            this.finalize();
+            finalize();
         } catch ( Throwable e ) {
             e.printStackTrace();
         }
