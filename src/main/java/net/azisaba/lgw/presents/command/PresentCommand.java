@@ -2,6 +2,7 @@ package net.azisaba.lgw.presents.command;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,20 +40,30 @@ public class PresentCommand implements CommandExecutor {
     private final PresentFactory factory;
     private HashMap<UUID, PresentBuilder> builders = new HashMap<>();
 
+    private final List<String> correctArgs = Arrays.asList("date", "command", "commands", "mode");
+    private JSONMessage helpMessage = JSONMessage.create(Chat.f("&b&m{0}", Strings.repeat("━", 50))).newline()
+            .then(Chat.f("&e/present create <名前> &7- &aビルダーを作成します")).suggestCommand("/present create ").newline()
+            .then(Chat.f("&e/present delete <名前> &7- &aプレゼントを削除します")).suggestCommand("/present delete ").newline()
+            .then(Chat.f("&e/present build &7- &aビルダーからプレゼントを作成します")).suggestCommand("/present build").newline()
+            .then(Chat.f("&e/present date <yyyy/MM/dd hh:mm:ss> &7- &a日付を指定します")).suggestCommand("/present date ").newline()
+            .then(Chat.f("&e/present mode <&cAll&e/&cOnline&e/&cOffline&e> &7- &aモードを指定します")).suggestCommand("/present mode ").newline()
+            .then(Chat.f("&e/present command <&cadd&e/&cremove&e> <&ccmd&e/&cindex&e> &7- &aコマンドを変更します")).suggestCommand("/present command ").newline()
+            .then(Chat.f("&b&m{0}", Strings.repeat("━", 50)));
+
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if ( args.length <= 0 ) {
-            sender.sendMessage(Chat.f("&cひきすうたりないよ <3"));
-            return true;
-        }
         if ( !(sender instanceof Player) ) {
             sender.sendMessage(Chat.f("&cコンソールからは未対応です"));
             return true;
         }
-
         Player p = (Player) sender;
+
+        if ( args.length <= 0 ) {
+            sendHelpMessage(p);
+            return true;
+        }
 
         if ( args[0].equalsIgnoreCase("create") ) {
             if ( args.length < 2 ) {
@@ -67,7 +78,6 @@ public class PresentCommand implements CommandExecutor {
             p.sendMessage(Chat.f("&a新しいビルダーを作成しました"));
             return true;
         }
-
         if ( args[0].equalsIgnoreCase("delete") ) {
             if ( args.length < 2 ) {
                 p.sendMessage(Chat.f("&c使い方: /{0} delete <名前>", label));
@@ -86,8 +96,11 @@ public class PresentCommand implements CommandExecutor {
         }
 
         PresentBuilder builder = builders.getOrDefault(p.getUniqueId(), null);
-        if ( builder == null ) {
-            p.sendMessage(Chat.f("&c先に &e/{0} create &cを実行してビルダーを作成してください"));
+        if ( builder == null && correctArgs.contains(args[0].toLowerCase()) ) {
+            p.sendMessage(Chat.f("&c先に &e/{0} create &cを実行してビルダーを作成してください", label));
+            return true;
+        } else if ( builder == null ) {
+            sendHelpMessage(p);
             return true;
         }
 
@@ -110,10 +123,7 @@ public class PresentCommand implements CommandExecutor {
             } else {
                 p.sendMessage(Chat.f("&cプレゼントの作成に失敗しました。"));
             }
-            return true;
-        }
-
-        if ( args[0].equalsIgnoreCase("command") ) {
+        } else if ( args[0].equalsIgnoreCase("command") || args[0].equalsIgnoreCase("commands") ) {
             if ( args.length < 2 ) {
                 p.sendMessage(Chat.f("&c使い方: /{0} command <&eadd&c/&eremove&c> <&ecommand&c/&enumber&c>", label));
                 return true;
@@ -138,10 +148,7 @@ public class PresentCommand implements CommandExecutor {
             } else {
                 p.sendMessage(Chat.f("&c2つ目の引数は&eadd&cか&eremove&cを指定してください"));
             }
-            return true;
-        }
-
-        if ( args[0].equalsIgnoreCase("date") ) {
+        } else if ( args[0].equalsIgnoreCase("date") ) {
             if ( args.length < 3 ) {
                 p.sendMessage(Chat.f("&c使い方: /{0} date <yyyy/MM/dd hh:mm:ss>", label));
                 return true;
@@ -158,10 +165,7 @@ public class PresentCommand implements CommandExecutor {
 
             builder.setDate(date);
             p.sendMessage(Chat.f("&a時刻を設定しました"));
-            return true;
-        }
-
-        if ( args[0].equalsIgnoreCase("mode") ) {
+        } else if ( args[0].equalsIgnoreCase("mode") ) {
             if ( args.length < 2 ) {
                 p.sendMessage(Chat.f("&c使い方: /{0} mode <&eall&c/&eonline&c/&eoffline&c>", label));
                 return true;
@@ -177,9 +181,7 @@ public class PresentCommand implements CommandExecutor {
 
             builder.setMode(mode);
             p.sendMessage(Chat.f("&e{0}&aモードに設定しました", mode.name().toLowerCase()));
-            return true;
         }
-
         return true;
     }
 
@@ -193,7 +195,7 @@ public class PresentCommand implements CommandExecutor {
             i++;
         }
 
-        if (commands.size() <= 0) {
+        if ( commands.size() <= 0 ) {
             msg.then(Chat.f("&cなし"));
         }
 
@@ -201,5 +203,9 @@ public class PresentCommand implements CommandExecutor {
         msg.then(Chat.f("&b{0}", Strings.repeat("━", 20)));
 
         return msg;
+    }
+
+    private void sendHelpMessage(Player p) {
+        helpMessage.send(p);
     }
 }
