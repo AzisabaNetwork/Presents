@@ -65,6 +65,43 @@ public class PresentCommand implements CommandExecutor {
             return true;
         }
 
+        if ( args[0].equalsIgnoreCase("list") ) {
+            StringBuilder builder = new StringBuilder(Chat.f("&b&m{0}\n", Strings.repeat("━", 50)));
+            List<Present> presents = container.getAllPresents();
+            presents.forEach(present -> builder.append(Chat.f("&r  &7- &e{0}\n", present.getName())));
+
+            if ( presents.size() <= 0 ) {
+                builder.append(Chat.f("&r  &7- &cなし\n"));
+            }
+            builder.append(Chat.f("&b&m{0}", Strings.repeat("━", 50)));
+            p.sendMessage(builder.toString());
+            return true;
+        }
+        if ( args[0].equalsIgnoreCase("info") ) {
+            if ( args.length < 2 ) {
+                p.sendMessage(Chat.f("&c使い方: /{0} info <名前>", label));
+                return true;
+            }
+            Present present = container.getPresent(args[1]);
+
+            if ( present == null ) {
+                p.sendMessage(Chat.f("&e{0}&cという名前のプレゼントが見つかりませんでした。", args[1]));
+                return true;
+            }
+
+            StringBuilder builder = new StringBuilder(Chat.f("&b&m{0}\n", Strings.repeat("━", 50)));
+            builder.append(Chat.f("&e名前&a: &d{0}\n", present.getName()));
+            builder.append(Chat.f("&eモード&a: &d{0}\n", present.getMode().toString().toLowerCase()));
+            builder.append(Chat.f("&e時刻&a: &d{0}\n", sdf.format(present.getDate())));
+            builder.append(Chat.f("&eコマンド&a:\n"));
+            for ( String cmd : present.getCommands() ) {
+                builder.append(Chat.f("&r  &7- &d{0}\n", cmd));
+            }
+            builder.append(Chat.f("&b&m{0}", Strings.repeat("━", 50)));
+
+            p.sendMessage(builder.toString());
+            return true;
+        }
         if ( args[0].equalsIgnoreCase("create") ) {
             if ( args.length < 2 ) {
                 p.sendMessage(Chat.f("&c使い方: /{0} create <名前>", label));
