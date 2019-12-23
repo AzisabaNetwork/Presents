@@ -225,20 +225,17 @@ public class PresentCommand implements CommandExecutor {
     }
 
     private JSONMessage getCommandViewer(String label, List<String> commands) {
-        JSONMessage msg = JSONMessage.create(Chat.f("&b{0}", Strings.repeat("━", 20)));
+        JSONMessage msg = JSONMessage.create(Chat.f("&b{0}", Strings.repeat("━", 20))).newline();
         for ( int i = 0; i < commands.size(); i++ ) {
             String cmd = commands.get(i);
-            msg.newline();
             msg.then(Chat.f("&e{0}&a: &d{1} ", i, cmd));
-            msg.then(Chat.f("&c[-]")).runCommand(Chat.f("/{0} command remove {1}", label, i)).tooltip(Chat.f("&c削除する"));
-            i++;
+            msg.then(Chat.f("&c[-]")).runCommand(Chat.f("/{0} command remove {1}", label, i));
+            msg.newline();
         }
 
         if ( commands.size() <= 0 ) {
-            msg.then(Chat.f("&cなし"));
+            msg.then(Chat.f("&cなし")).newline();
         }
-
-        msg.newline();
         msg.then(Chat.f("&b{0}", Strings.repeat("━", 20)));
 
         return msg;
