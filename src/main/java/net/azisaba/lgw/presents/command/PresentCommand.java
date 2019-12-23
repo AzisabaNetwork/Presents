@@ -50,7 +50,7 @@ public class PresentCommand implements CommandExecutor {
             .then(Chat.f("&e/present command <&cadd&e/&cremove&e> <&ccmd&e/&cindex&e> &7- &aコマンドを変更します")).suggestCommand("/present command ").newline()
             .then(Chat.f("&b&m{0}", Strings.repeat("━", 50)));
 
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
