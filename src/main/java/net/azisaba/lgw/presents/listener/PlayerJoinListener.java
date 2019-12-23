@@ -33,7 +33,7 @@ public class PlayerJoinListener implements Listener {
                         container.getMatchPresents(player).forEach(present -> present.setAlreadyGave(player));
                     }
                 }
-            }, 20L);
+            }, 3L);
         } else {
             Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                 private final Player player = p;
@@ -44,7 +44,7 @@ public class PlayerJoinListener implements Listener {
                         container.getMatchPresents(player).forEach(present -> present.execute(player));
                     }
                 }
-            }, 20L);
+            }, 3L);
         }
     }
 }
