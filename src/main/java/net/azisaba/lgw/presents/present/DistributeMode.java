@@ -15,7 +15,7 @@ public enum DistributeMode {
 
     ALL(true),
     ONLINE(true),
-    OFFLINE(false),
+    OFFLINE(true),
 //    USER(true) // TODO 後々実装
     ;
 

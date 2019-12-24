@@ -47,9 +47,13 @@ public class ExecuteCommandTask extends BukkitRunnable {
                 return;
             }
 
-            present.execute(new ArrayList<>(Bukkit.getOnlinePlayers()));
-            if ( present.getMode() == DistributeMode.ONLINE ) {
-                plugin.getContainer().removePresent(present);
+            if ( present.getMode() == DistributeMode.OFFLINE ) {
+                Bukkit.getOnlinePlayers().forEach(present::setAlreadyGave);
+            } else {
+                present.execute(new ArrayList<>(Bukkit.getOnlinePlayers()));
+                if ( present.getMode() == DistributeMode.ONLINE ) {
+                    plugin.getContainer().removePresent(present);
+                }
             }
 
             executed = true;
