@@ -31,6 +31,8 @@ public class PresentBuilder {
     private List<String> commands = new ArrayList<>();
     // 配布モード
     private DistributeMode mode;
+    // 必要なスロットの数
+    private int requireEmptySlots = 0;
 
     /**
      * 指定されたデータに基づいてプレゼントを作成します。
@@ -47,7 +49,7 @@ public class PresentBuilder {
         }
 
         // プレゼントを作成する
-        Present present = new Present(name, date, commands, mode);
+        Present present = new Present(name, date, commands, mode, requireEmptySlots);
         // 登録する
         container.register(present);
         // 返す

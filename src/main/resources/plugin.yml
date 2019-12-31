@@ -7,6 +7,12 @@ commands:
   present:
     usage: /present
     permission: presents.command.present
+  retrypresent:
+    usage: /RetryPresent
+    permission: presents.command.retrypresent
+    aliases: ["retrypresents", "rp"]
 permissions:
   presents.command.present:
     default: op
+  presents.command.retrypresent:
+    default: true

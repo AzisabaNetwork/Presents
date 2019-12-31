@@ -99,6 +99,14 @@ public class PresentCommand implements CommandExecutor {
             for ( String cmd : present.getCommands() ) {
                 builder.append(Chat.f("&r  &7- &d{0}\n", cmd));
             }
+            builder.append(Chat.f("&e取得待機中プレイヤー&a:\n"));
+            if ( present.getRetryPlayers().size() > 0 ) {
+                for ( UUID uuid : present.getRetryPlayers() ) {
+                    builder.append(Chat.f("&r  &7- &d{0}\n", uuid.toString()));
+                }
+            } else {
+                builder.append(Chat.f("&r  &7- &cなし\n"));
+            }
             builder.append(Chat.f("&b&m{0}", Strings.repeat("━", 50)));
 
             p.sendMessage(builder.toString());

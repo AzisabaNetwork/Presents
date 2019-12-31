@@ -65,7 +65,14 @@ public class PresentContainer {
             if ( present.getDate().after(new Date()) ) {
                 continue;
             }
-            if ( present.getAlreadyGavePlayers().contains(player.getUniqueId()) ) {
+            if ( present.isAlreadyGave(player) ) {
+                continue;
+            }
+            if ( present.isRetryPlayer(player) ) {
+                p.add(present);
+                continue;
+            }
+            if ( present.getMode() == DistributeMode.ONLINE ) {
                 continue;
             }
 //            if ( present.getMode() == DistributeMode.USER ) { // TODO 作成中

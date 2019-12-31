@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.azisaba.lgw.presents.command.PresentCommand;
+import net.azisaba.lgw.presents.command.RetryPresentCommand;
 import net.azisaba.lgw.presents.listener.PlayerJoinListener;
 import net.azisaba.lgw.presents.present.PresentContainer;
 import net.azisaba.lgw.presents.present.PresentFactory;
@@ -40,6 +41,7 @@ public class Presents extends JavaPlugin {
         loader.loadAllPresents();
 
         Bukkit.getPluginCommand("present").setExecutor(new PresentCommand(container, factory));
+        Bukkit.getPluginCommand("retrypresent").setExecutor(new RetryPresentCommand(container));
 
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(this, container), this);
 

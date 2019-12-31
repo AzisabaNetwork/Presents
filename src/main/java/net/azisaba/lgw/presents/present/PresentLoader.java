@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -59,9 +60,16 @@ public class PresentLoader {
             List<UUID> alreadyGave = conf.getStringList("AlreadyGave").stream()
                     .map(UUID::fromString)
                     .collect(Collectors.toList());
+            List<UUID> retryPlayers = new ArrayList<>();
+            if ( conf.isSet("RetryPlayers") ) {
+                retryPlayers = conf.getStringList("RetryPlayers").stream()
+                        .map(UUID::fromString)
+                        .collect(Collectors.toList());
+            }
+            int emptySlots = conf.getInt("RequireEmptySlots", 0);
 
             // Present作成
-            Present present = factory.loadPresent(name, date, mode, commands, alreadyGave);
+            Present present = factory.loadPresent(name, date, mode, commands, emptySlots, alreadyGave, retryPlayers);
             // 登録
             container.register(present);
         }
@@ -74,8 +82,12 @@ public class PresentLoader {
         conf.set("Name", present.getName());
         conf.set("Date", sdf.format(present.getDate()));
         conf.set("Mode", present.getMode().name());
+        conf.set("RequireEmptySlots", present.getRequireEmptySlots());
         conf.set("Commands", present.getCommands());
         conf.set("AlreadyGave", present.getAlreadyGavePlayers().stream()
+                .map(UUID::toString)
+                .collect(Collectors.toList()));
+        conf.set("RetryPlayers", present.getRetryPlayers().stream()
                 .map(UUID::toString)
                 .collect(Collectors.toList()));
 

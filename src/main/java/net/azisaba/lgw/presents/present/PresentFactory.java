@@ -26,9 +26,10 @@ public class PresentFactory {
         return new PresentBuilder(container);
     }
 
-    protected Present loadPresent(String name, Date date, DistributeMode mode, List<String> commands, List<UUID> alreadyGave) {
-        Present present = new Present(name, date, commands, mode);
+    protected Present loadPresent(String name, Date date, DistributeMode mode, List<String> commands, int emptySlots, List<UUID> alreadyGave, List<UUID> retryPlayers) {
+        Present present = new Present(name, date, commands, mode, emptySlots);
         present.setAlreadyGavePlayers(alreadyGave);
+        present.setRetryPlayers(retryPlayers);
         return present;
     }
 }
