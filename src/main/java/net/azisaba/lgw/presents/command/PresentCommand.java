@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -47,6 +48,7 @@ public class PresentCommand implements CommandExecutor {
             .then(Chat.f("&e/present create <名前> &7- &aビルダーを作成します")).suggestCommand("/present create ").newline()
             .then(Chat.f("&e/present delete <名前> &7- &aプレゼントを削除します")).suggestCommand("/present delete ").newline()
             .then(Chat.f("&e/present build &7- &aビルダーからプレゼントを作成します")).suggestCommand("/present build").newline()
+            .then(Chat.f("&e/present name <名前> &7- &aプレゼント名を変更します")).suggestCommand("/present name ").newline()
             .then(Chat.f("&e/present date <yyyy/MM/dd hh:mm:ss> &7- &a日付を指定します")).suggestCommand("/present date ").newline()
             .then(Chat.f("&e/present mode <&cAll&e/&cOnline&e/&cOffline&e> &7- &aモードを指定します")).suggestCommand("/present mode ").newline()
             .then(Chat.f("&e/present slot <必要スロット数> &7- &a受け取りに必要な空き数を指定します")).suggestCommand("/present slot ").newline()
@@ -99,10 +101,7 @@ public class PresentCommand implements CommandExecutor {
             builder.append(Chat.f("&e必要スロット数&a: &d{0}\n", present.getRequireEmptySlots()));
             builder.append(Chat.f("&eコマンド&a:\n"));
             for ( String cmd : present.getCommands() ) {
-                if ( cmd.length() > 54 ) {
-                    cmd = cmd.substring(0, 51) + Chat.f(" &a.....");
-                }
-                cmd = cmd.replace("<player>", Chat.f("&a<player>&d"));
+                cmd = formatCommand(cmd, ChatColor.LIGHT_PURPLE);
                 builder.append(Chat.f("&r  &7- &d{0}\n", cmd));
             }
             builder.append(Chat.f("&e取得待機中プレイヤー&a:\n"));
@@ -171,13 +170,22 @@ public class PresentCommand implements CommandExecutor {
 
             Present present = builder.create();
             if ( present != null ) {
-                p.sendMessage(Chat.f("&aプレゼントの作成に成功しました。"));
+                JSONMessage.create(Chat.f("&aプレゼントの作成に成功しました。"))
+                        .then(Chat.f("&e[ここ]")).runCommand("/present info " + present.getName())
+                        .then(Chat.f("&aをクリックで確認！")).send(p);
                 builders.remove(p.getUniqueId());
             } else {
                 p.sendMessage(Chat.f("&cプレゼントの作成に失敗しました。"));
             }
-        } else if ( args[0].equalsIgnoreCase("command") || args[0].equalsIgnoreCase("commands") ) {
+        } else if ( args[0].equalsIgnoreCase("name") ) {
             if ( args.length < 2 ) {
+                p.sendMessage(Chat.f("&c使い方: /{0} name <名前>", label));
+                return true;
+            }
+            builder.setName(args[1]);
+            p.sendMessage(Chat.f("&aプレゼント名を&e{0}&aに変更しました", args[1]));
+        } else if ( args[0].equalsIgnoreCase("command") || args[0].equalsIgnoreCase("commands") ) {
+            if ( args.length < 3 ) {
                 p.sendMessage(Chat.f("&c使い方: /{0} command <&eadd&c/&eremove&c> <&ecommand&c/&enumber&c>", label));
                 return true;
             }
@@ -217,7 +225,7 @@ public class PresentCommand implements CommandExecutor {
             }
 
             builder.setDate(date);
-            p.sendMessage(Chat.f("&a時刻を設定しました"));
+            p.sendMessage(Chat.f("&a時刻を&e{0}&aに設定しました", sdf.format(date)));
         } else if ( args[0].equalsIgnoreCase("mode") ) {
             if ( args.length < 2 ) {
                 p.sendMessage(Chat.f("&c使い方: /{0} mode <&eall&c/&eonline&c/&eoffline&c>", label));
@@ -263,8 +271,8 @@ public class PresentCommand implements CommandExecutor {
     private JSONMessage getCommandViewer(String label, List<String> commands) {
         JSONMessage msg = JSONMessage.create(Chat.f("&b&m{0}", Strings.repeat("━", 50))).newline();
         for ( int i = 0; i < commands.size(); i++ ) {
-            String cmd = commands.get(i);
-            msg.then(Chat.f("&e{0}&a: &d{1} ", i, cmd));
+            String cmd = formatCommand(commands.get(i), ChatColor.LIGHT_PURPLE);
+            msg.then(Chat.f("&e{0}&a: &d{1} ", i + 1, cmd));
             msg.then(Chat.f("&c[-]")).runCommand(Chat.f("/{0} command remove {1}", label, i));
             msg.newline();
         }
@@ -279,5 +287,18 @@ public class PresentCommand implements CommandExecutor {
 
     private void sendHelpMessage(Player p) {
         helpMessage.send(p);
+    }
+
+    private String formatCommand(String cmd, ChatColor defaultColor) {
+        ChatColor formatColor = ChatColor.GREEN;
+        if ( formatColor == defaultColor ) {
+            formatColor = ChatColor.RED;
+        }
+        cmd = cmd.replace("<player>", Chat.f("{0}<player>{1}", formatColor, defaultColor));
+        if ( cmd.length() < 54 ) {
+            return cmd;
+        } else {
+            return cmd.substring(0, 50) + Chat.f(" .....", formatColor);
+        }
     }
 }
