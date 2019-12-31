@@ -97,6 +97,10 @@ public class PresentCommand implements CommandExecutor {
             builder.append(Chat.f("&e時刻&a: &d{0}\n", sdf.format(present.getDate())));
             builder.append(Chat.f("&eコマンド&a:\n"));
             for ( String cmd : present.getCommands() ) {
+                if ( cmd.length() > 54 ) {
+                    cmd = cmd.substring(0, 51) + Chat.f(" &a.....");
+                }
+                cmd = cmd.replace("<player>", Chat.f("&a<player>&d"));
                 builder.append(Chat.f("&r  &7- &d{0}\n", cmd));
             }
             builder.append(Chat.f("&e取得待機中プレイヤー&a:\n"));
