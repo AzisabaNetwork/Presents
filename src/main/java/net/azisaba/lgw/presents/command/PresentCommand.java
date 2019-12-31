@@ -49,6 +49,7 @@ public class PresentCommand implements CommandExecutor {
             .then(Chat.f("&e/present build &7- &aビルダーからプレゼントを作成します")).suggestCommand("/present build").newline()
             .then(Chat.f("&e/present date <yyyy/MM/dd hh:mm:ss> &7- &a日付を指定します")).suggestCommand("/present date ").newline()
             .then(Chat.f("&e/present mode <&cAll&e/&cOnline&e/&cOffline&e> &7- &aモードを指定します")).suggestCommand("/present mode ").newline()
+            .then(Chat.f("&e/present slot <必要スロット数> &7- &a受け取りに必要な空き数を指定します")).suggestCommand("/present slot ").newline()
             .then(Chat.f("&e/present command <&cadd&e/&cremove&e> <&ccmd&e/&cindex&e> &7- &aコマンドを変更します")).suggestCommand("/present command ").newline()
             .then(Chat.f("&b&m{0}", Strings.repeat("━", 50)));
 
@@ -95,6 +96,7 @@ public class PresentCommand implements CommandExecutor {
             builder.append(Chat.f("&e名前&a: &d{0}\n", present.getName()));
             builder.append(Chat.f("&eモード&a: &d{0}\n", present.getMode().toString().toLowerCase()));
             builder.append(Chat.f("&e時刻&a: &d{0}\n", sdf.format(present.getDate())));
+            builder.append(Chat.f("&e必要スロット数&a: &d{0}\n", present.getRequireEmptySlots()));
             builder.append(Chat.f("&eコマンド&a:\n"));
             for ( String cmd : present.getCommands() ) {
                 if ( cmd.length() > 54 ) {
@@ -232,6 +234,28 @@ public class PresentCommand implements CommandExecutor {
 
             builder.setMode(mode);
             p.sendMessage(Chat.f("&e{0}&aモードに設定しました", mode.name().toLowerCase()));
+        } else if ( args[0].equalsIgnoreCase("slot") ) {
+            if ( args.length < 2 ) {
+                p.sendMessage(Chat.f("&c使い方: /{0} slot &e[受け取りに必要なスロット数]", label));
+                return true;
+            }
+
+            int slot = 0;
+            try {
+                slot = Integer.parseInt(args[1]);
+            } catch ( Exception e ) {
+                p.sendMessage(Chat.f("&c数字を入力してください。"));
+                return true;
+            }
+
+            if ( slot < 0 ) {
+                slot = 0;
+            }
+
+            builder.setRequireEmptySlots(slot);
+            p.sendMessage(Chat.f("&a受け取りに必要なスロット数を&e{0}&aに設定しました", slot));
+        } else {
+            sendHelpMessage(p);
         }
         return true;
     }
