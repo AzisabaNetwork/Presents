@@ -34,7 +34,7 @@ public class PresentContainer {
 
         presents.put(present.getName(), present);
 
-        if ( present.getMode().isNeedTask() ) {
+        if ( present.getMode().isNeedTask() && present.getDate().after(new Date())) {
             new ExecuteCommandTask(plugin, present).runTaskLater(plugin, 0L);
         }
     }
