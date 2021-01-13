@@ -1,20 +1,16 @@
 package net.azisaba.lgw.presents.listener;
 
-import org.bukkit.Bukkit;
+import lombok.RequiredArgsConstructor;
+import net.azisaba.lgw.presents.Presents;
+import net.azisaba.lgw.presents.present.PresentContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import net.azisaba.lgw.presents.Presents;
-import net.azisaba.lgw.presents.present.PresentContainer;
-
-import lombok.RequiredArgsConstructor;
-
 @RequiredArgsConstructor
 public class PlayerJoinListener implements Listener {
 
-    private final Presents plugin;
     private final PresentContainer container;
 
     @EventHandler
@@ -23,28 +19,16 @@ public class PlayerJoinListener implements Listener {
 
         boolean firstJoin = !p.hasPlayedBefore();
 
-        if ( firstJoin ) {
-            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                private final Player player = p;
-
-                @Override
-                public void run() {
-                    if ( player != null && player.isOnline() ) {
-                        container.getMatchPresents(player).forEach(present -> present.setAlreadyGave(player));
-                    }
-                }
-            }, 3L);
+        if (firstJoin) {
+            Presents.newChain()
+                    .async(() -> container.getMatchPresents(p).forEach(present -> present.setAlreadyGave(p)))
+                    .execute();
         } else {
-            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                private final Player player = p;
-
-                @Override
-                public void run() {
-                    if ( player != null && player.isOnline() ) {
-                        container.getMatchPresents(player).forEach(present -> present.execute(player));
-                    }
-                }
-            }, 3L);
+            Presents.newChain()
+                    .delay(3)
+                    .asyncFirst(() -> container.getMatchPresents(p))
+                    .syncLast(presents -> presents.forEach(present -> present.execute(p)))
+                    .execute();
         }
     }
 }

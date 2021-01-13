@@ -1,17 +1,16 @@
 package net.azisaba.lgw.presents.task;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
-
+import lombok.RequiredArgsConstructor;
 import net.azisaba.lgw.presents.Presents;
 import net.azisaba.lgw.presents.present.DistributeMode;
 import net.azisaba.lgw.presents.present.Present;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import lombok.RequiredArgsConstructor;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * 新年のカウントダウンを行うタスクです
@@ -59,9 +58,9 @@ public class ExecuteCommandTask extends BukkitRunnable {
 
         // tickに変換
         long remainingTicks = new BigDecimal(remaining)
-                .divide(BigDecimal.valueOf(50), BigDecimal.ROUND_DOWN)
-                .divide(BigDecimal.valueOf(3), BigDecimal.ROUND_DOWN) // どうしてもtick数は20以下になるので、3で割ることで遅れるのを防ぐ
-                .setScale(0, BigDecimal.ROUND_DOWN)
+                .divide(BigDecimal.valueOf(50), RoundingMode.DOWN)
+                .divide(BigDecimal.valueOf(3), RoundingMode.DOWN) // どうしてもtick数は20以下になるので、3で割ることで遅れるのを防ぐ
+                .setScale(0, RoundingMode.DOWN)
                 .longValue();
 
         // tick数が0以下の場合は1にする
@@ -74,10 +73,5 @@ public class ExecuteCommandTask extends BukkitRunnable {
 
         // このオブジェクトを削除
         cancel();
-        try {
-            finalize();
-        } catch ( Throwable e ) {
-            e.printStackTrace();
-        }
     }
 }
