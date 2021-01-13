@@ -50,6 +50,10 @@
                             <pattern>co.aikar.taskchain</pattern>
                             <shadedPattern>net.azisaba.lgw.presents.taskchain</shadedPattern> <!-- Replace this -->
                         </relocation>
+                        <relocation>
+                            <pattern>fr.minuskube.inv</pattern>
+                            <shadedPattern>net.azisaba.lgw.presents.smartinvs</shadedPattern> <!-- Replace this -->
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -87,20 +91,25 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>me.rayzr522</groupId>
-            <artifactId>jsonmessage</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.16</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>me.rayzr522</groupId>
+            <artifactId>jsonmessage</artifactId> <!-- MIT License -->
+            <version>1.2.0</version>
+        </dependency>
+        <dependency>
             <groupId>co.aikar</groupId>
-            <artifactId>taskchain-bukkit</artifactId>
-            <version>3.7.2</version> <!-- Replace this with the version from TaskChain -->
+            <artifactId>taskchain-bukkit</artifactId> <!-- MIT License -->
+            <version>3.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.minuskube.inv</groupId>
+            <artifactId>smart-invs</artifactId> <!-- Apache License 2.0 -->
+            <version>1.2.7</version>
         </dependency>
     </dependencies>
 </project>
