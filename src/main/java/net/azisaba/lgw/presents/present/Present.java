@@ -61,9 +61,7 @@ public class Present {
             return;
         }
 
-        if ( retryPlayers.contains(player.getUniqueId()) ) {
-            retryPlayers.remove(player.getUniqueId());
-        }
+        retryPlayers.remove(player.getUniqueId());
 
         for ( String command : commands ) {
             command = command.replace("<player>", player.getName());

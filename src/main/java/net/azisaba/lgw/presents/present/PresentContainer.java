@@ -48,9 +48,7 @@ public class PresentContainer {
     }
 
     public void removePresent(Present present) {
-        if ( presents.containsKey(present.getName()) ) {
-            presents.remove(present.getName());
-        }
+        presents.remove(present.getName());
 
         File file = new File(folder, present.getName() + ".yml");
         if ( file.exists() ) {
