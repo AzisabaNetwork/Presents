@@ -25,6 +25,7 @@ import java.util.List;
 @Getter
 public class Presents extends JavaPlugin {
 
+    private static TaskChainFactory taskChainFactory;
     // ロードされたプレゼントを格納するインスタンス
     private PresentContainer container;
     // プレゼントを作成するインスタンス
@@ -32,7 +33,13 @@ public class Presents extends JavaPlugin {
     // プレゼントをロードするインスタンス
     private PresentLoader loader;
 
-    private static TaskChainFactory taskChainFactory;
+    public static <T> TaskChain<T> newChain() {
+        return taskChainFactory.newChain();
+    }
+
+    public static <T> TaskChain<T> newSharedChain(String name) {
+        return taskChainFactory.newSharedChain(name);
+    }
 
     @Override
     public void onEnable() {
@@ -63,13 +70,5 @@ public class Presents extends JavaPlugin {
     public void onDisable() {
         container.getAllPresents().forEach(loader::savePresent);
         Bukkit.getLogger().info(getName() + " disabled.");
-    }
-
-    public static <T> TaskChain<T> newChain() {
-        return taskChainFactory.newChain();
-    }
-
-    public static <T> TaskChain<T> newSharedChain(String name) {
-        return taskChainFactory.newSharedChain(name);
     }
 }

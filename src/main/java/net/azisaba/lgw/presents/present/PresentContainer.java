@@ -1,23 +1,20 @@
 package net.azisaba.lgw.presents.present;
 
+import lombok.RequiredArgsConstructor;
+import net.azisaba.lgw.presents.Presents;
+import net.azisaba.lgw.presents.task.ExecuteCommandTask;
+import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.entity.Player;
-
-import net.azisaba.lgw.presents.Presents;
-import net.azisaba.lgw.presents.task.ExecuteCommandTask;
-
-import lombok.RequiredArgsConstructor;
-
 /**
  * ロードしたプレゼントを格納するクラス
  *
  * @author siloneco
- *
  */
 @RequiredArgsConstructor
 public class PresentContainer {
@@ -28,13 +25,13 @@ public class PresentContainer {
 
     public void register(Present present) throws IllegalArgumentException {
         // 既に登録されている名前が使用されている場合は例外
-        if ( presents.containsKey(present.getName()) ) {
+        if (presents.containsKey(present.getName())) {
             throw new IllegalArgumentException("The name \"" + present.getName() + "\" is already using.");
         }
 
         presents.put(present.getName(), present);
 
-        if ( present.getMode().isNeedTask() && present.getDate().after(new Date())) {
+        if (present.getMode().isNeedTask() && present.getDate().after(new Date())) {
             new ExecuteCommandTask(plugin, present).runTaskLater(plugin, 0L);
         }
     }
@@ -51,7 +48,7 @@ public class PresentContainer {
         presents.remove(present.getName());
 
         File file = new File(folder, present.getName() + ".yml");
-        if ( file.exists() ) {
+        if (file.exists()) {
             file.delete();
         }
     }
@@ -59,18 +56,18 @@ public class PresentContainer {
     public List<Present> getMatchPresents(Player player) {
         List<Present> p = new ArrayList<>();
 
-        for ( Present present : presents.values() ) {
-            if ( present.getDate().after(new Date()) ) {
+        for (Present present : presents.values()) {
+            if (present.getDate().after(new Date())) {
                 continue;
             }
-            if ( present.isAlreadyGave(player) ) {
+            if (present.isAlreadyGave(player)) {
                 continue;
             }
-            if ( present.isRetryPlayer(player) ) {
+            if (present.isRetryPlayer(player)) {
                 p.add(present);
                 continue;
             }
-            if ( present.getMode() == DistributeMode.ONLINE ) {
+            if (present.getMode() == DistributeMode.ONLINE) {
                 continue;
             }
 //            if ( present.getMode() == DistributeMode.USER ) { // TODO 作成中

@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
  * プレゼントの配布形式のenum
  *
  * @author siloneco
- *
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum DistributeMode {

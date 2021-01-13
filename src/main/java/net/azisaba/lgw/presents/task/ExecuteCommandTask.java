@@ -16,7 +16,6 @@ import java.util.Calendar;
  * 新年のカウントダウンを行うタスクです
  *
  * @author siloneco
- *
  */
 @RequiredArgsConstructor
 public class ExecuteCommandTask extends BukkitRunnable {
@@ -39,14 +38,14 @@ public class ExecuteCommandTask extends BukkitRunnable {
         long remaining = target - now;
 
         // 残りミリ秒が100を切っている場合
-        if ( remaining <= 100 ) {
+        if (remaining <= 100) {
             // 既に実行されている場合はreturn
-            if ( executed ) {
+            if (executed) {
                 Bukkit.getLogger().info("already executed commands (" + getTaskId() + ")");
                 return;
             }
 
-            if ( present.getMode() == DistributeMode.OFFLINE ) {
+            if (present.getMode() == DistributeMode.OFFLINE) {
                 Bukkit.getOnlinePlayers().forEach(present::setAlreadyGave);
             } else {
                 present.execute(new ArrayList<>(Bukkit.getOnlinePlayers()));
@@ -64,7 +63,7 @@ public class ExecuteCommandTask extends BukkitRunnable {
                 .longValue();
 
         // tick数が0以下の場合は1にする
-        if ( remainingTicks <= 0 ) {
+        if (remainingTicks <= 0) {
             remainingTicks = 1;
         }
 

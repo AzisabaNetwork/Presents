@@ -1,5 +1,8 @@
 package net.azisaba.lgw.presents.present;
 
+import lombok.RequiredArgsConstructor;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -10,15 +13,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.bukkit.configuration.file.YamlConfiguration;
-
-import lombok.RequiredArgsConstructor;
-
 /**
  * プレゼントをセーブ、ロードするクラス
  *
  * @author siloneco
- *
  */
 @RequiredArgsConstructor
 public class PresentLoader {
@@ -30,17 +28,17 @@ public class PresentLoader {
 
     public void loadAllPresents() {
         // 存在していない場合はreturn
-        if ( !folder.exists() ) {
+        if (!folder.exists()) {
             return;
         }
 
-        for ( File file : folder.listFiles() ) {
+        for (File file : folder.listFiles()) {
             // ディレクトリならcontinue
-            if ( file.isDirectory() ) {
+            if (file.isDirectory()) {
                 continue;
             }
             // yamlファイルではない場合continue;
-            if ( !file.getName().toLowerCase().endsWith(".yml") && !file.getName().toLowerCase().endsWith(".yaml") ) {
+            if (!file.getName().toLowerCase().endsWith(".yml") && !file.getName().toLowerCase().endsWith(".yaml")) {
                 continue;
             }
 
@@ -51,7 +49,7 @@ public class PresentLoader {
             Date date;
             try {
                 date = sdf.parse(conf.getString("Date"));
-            } catch ( ParseException e ) {
+            } catch (ParseException e) {
                 e.printStackTrace();
                 return;
             }
@@ -61,7 +59,7 @@ public class PresentLoader {
                     .map(UUID::fromString)
                     .collect(Collectors.toList());
             List<UUID> retryPlayers = new ArrayList<>();
-            if ( conf.isSet("RetryPlayers") ) {
+            if (conf.isSet("RetryPlayers")) {
                 retryPlayers = conf.getStringList("RetryPlayers").stream()
                         .map(UUID::fromString)
                         .collect(Collectors.toList());
@@ -93,7 +91,7 @@ public class PresentLoader {
 
         try {
             conf.save(file);
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

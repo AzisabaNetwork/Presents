@@ -1,16 +1,15 @@
 package net.azisaba.lgw.presents.present;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * Presentインスタンスを作成するクラス
  *
  * @author siloneco
- *
  */
 @RequiredArgsConstructor
 public class PresentFactory {

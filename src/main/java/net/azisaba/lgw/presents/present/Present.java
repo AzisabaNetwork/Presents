@@ -1,26 +1,23 @@
 package net.azisaba.lgw.presents.present;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import net.azisaba.lgw.presents.utils.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.azisaba.lgw.presents.utils.Chat;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * プレゼントを構成するクラス
  *
  * @author siloneco
- *
  */
 @Getter
 public class Present {
@@ -47,15 +44,15 @@ public class Present {
     }
 
     public void execute(Player player) {
-        if ( alreadyGavePlayers.contains(player.getUniqueId()) ) {
+        if (alreadyGavePlayers.contains(player.getUniqueId())) {
             return;
         }
 
-        if ( getEmptySlots(player) < requireEmptySlots ) {
+        if (getEmptySlots(player) < requireEmptySlots) {
             String msg = Chat.f("&e[注意] &c&n十分な空きがないためプレゼントを受け取れませんでした。\n"
                     + "&e[注意] &e{0}個以上&cの空きを確認した後 &e/RetryPresent &cを実行してください", requireEmptySlots);
             player.sendMessage(msg);
-            if ( !retryPlayers.contains(player.getUniqueId()) ) {
+            if (!retryPlayers.contains(player.getUniqueId())) {
                 retryPlayers.add(player.getUniqueId());
             }
             return;
@@ -63,7 +60,7 @@ public class Present {
 
         retryPlayers.remove(player.getUniqueId());
 
-        for ( String command : commands ) {
+        for (String command : commands) {
             command = command.replace("<player>", player.getName());
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }
@@ -72,13 +69,13 @@ public class Present {
     }
 
     public void execute(List<Player> players) {
-        for ( Player p : players ) {
+        for (Player p : players) {
             execute(p);
         }
     }
 
     public void setAlreadyGave(Player p) {
-        if ( !alreadyGavePlayers.contains(p.getUniqueId()) ) {
+        if (!alreadyGavePlayers.contains(p.getUniqueId())) {
             alreadyGavePlayers.add(p.getUniqueId());
         }
     }
@@ -88,7 +85,7 @@ public class Present {
     }
 
     public boolean isRetryPlayer(Player p) {
-        if ( isAlreadyGave(p) ) {
+        if (isAlreadyGave(p)) {
             return false;
         }
         return retryPlayers.contains(p.getUniqueId());
@@ -96,9 +93,9 @@ public class Present {
 
     private int getEmptySlots(Player p) {
         int count = 0;
-        for ( int i = 0; i < 36; i++ ) {
+        for (int i = 0; i < 36; i++) {
             ItemStack item = p.getInventory().getItem(i);
-            if ( item == null || item.getType() == Material.AIR ) {
+            if (item == null || item.getType() == Material.AIR) {
                 count++;
             }
         }
