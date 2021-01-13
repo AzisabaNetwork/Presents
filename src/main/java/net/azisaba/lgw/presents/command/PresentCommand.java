@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * /presentコマンドを実行するクラス
@@ -145,13 +144,12 @@ public class PresentCommand implements CommandExecutor {
 
         if (args[0].equalsIgnoreCase("build")) {
             List<String> errors = builder.getErrors();
-            errors.stream()
-                    .map(str -> Chat.f("&e{1}", str))
-                    .collect(Collectors.toList());
 
             if (errors.size() > 0) {
                 p.sendMessage(Chat.f("&cプレゼントの作成に失敗しました。以下エラーです"));
-                errors.forEach(p::sendMessage);
+                errors.stream()
+                        .map(str -> Chat.f("&e{1}", str))
+                        .forEach(p::sendMessage);
                 return true;
             }
 
@@ -182,7 +180,7 @@ public class PresentCommand implements CommandExecutor {
                 builder.getCommands().add(cmd);
                 getCommandViewer(label, builder.getCommands()).send(p);
             } else if (args[1].equalsIgnoreCase("remove")) {
-                int number = -1;
+                int number;
 
                 try {
                     number = Integer.parseInt(args[2]);
@@ -235,7 +233,7 @@ public class PresentCommand implements CommandExecutor {
                 return true;
             }
 
-            int slot = 0;
+            int slot;
             try {
                 slot = Integer.parseInt(args[1]);
             } catch (Exception e) {

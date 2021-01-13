@@ -48,8 +48,8 @@ public class PresentContainer {
         presents.remove(present.getName());
 
         File file = new File(folder, present.getName() + ".yml");
-        if (file.exists()) {
-            file.delete();
+        if (file.exists() && !file.delete()) {
+            plugin.getLogger().warning("Failed to delete file \"" + present.getName() + "\"");
         }
     }
 
