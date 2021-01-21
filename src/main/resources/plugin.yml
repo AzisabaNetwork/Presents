@@ -2,7 +2,8 @@ name: ${project.name}
 main: net.azisaba.lgw.presents.Presents
 version: ${project.version}
 description: ${project.description}
-authosr: ["siloneco"]
+authosr: [ "siloneco" ]
+api-version: 1.13
 commands:
   present:
     usage: /present
@@ -10,7 +11,7 @@ commands:
   retrypresent:
     usage: /RetryPresent
     permission: presents.command.retrypresent
-    aliases: ["retrypresents", "rp"]
+    aliases: [ "retrypresents", "rp" ]
 permissions:
   presents.command.present:
     default: op
