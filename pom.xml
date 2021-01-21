@@ -81,6 +81,10 @@
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
+        <repository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -110,6 +114,11 @@
             <groupId>fr.minuskube.inv</groupId>
             <artifactId>smart-invs</artifactId> <!-- Apache License 2.0 -->
             <version>1.2.7</version>
+        </dependency>
+        <dependency>
+            <groupId>net.wesjd</groupId>
+            <artifactId>anvilgui</artifactId> <!-- MIT License -->
+            <version>1.4.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
