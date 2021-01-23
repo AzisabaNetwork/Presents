@@ -2,6 +2,7 @@ package net.azisaba.lgw.presents.present;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.azisaba.lgw.presents.utils.Chat;
 import org.bukkit.Bukkit;
@@ -20,6 +21,7 @@ import java.util.UUID;
  * @author siloneco
  */
 @Getter
+@RequiredArgsConstructor
 public class Present {
 
     private final String name;
@@ -34,14 +36,6 @@ public class Present {
     private List<UUID> alreadyGavePlayers = new ArrayList<>();
     @Setter(value = AccessLevel.PROTECTED)
     private List<UUID> retryPlayers = new ArrayList<>();
-
-    public Present(String name, Date date, List<String> commands, DistributeMode mode, int requireEmptySlots) {
-        this.name = name;
-        this.date = date;
-        this.commands = commands;
-        this.mode = mode;
-        this.requireEmptySlots = requireEmptySlots;
-    }
 
     public void execute(Player player) {
         if (alreadyGavePlayers.contains(player.getUniqueId())) {

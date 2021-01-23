@@ -3,14 +3,19 @@ package net.azisaba.lgw.presents;
 import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
+import fr.minuskube.inv.InventoryManager;
 import lombok.Getter;
 import net.azisaba.lgw.presents.command.PresentCommand;
 import net.azisaba.lgw.presents.command.RetryPresentCommand;
+import net.azisaba.lgw.presents.gui.GUIOpenSupporter;
+import net.azisaba.lgw.presents.head.HeadContainer;
 import net.azisaba.lgw.presents.listener.PlayerJoinListener;
+import net.azisaba.lgw.presents.listener.TestListener;
 import net.azisaba.lgw.presents.present.PresentContainer;
 import net.azisaba.lgw.presents.present.PresentFactory;
 import net.azisaba.lgw.presents.present.PresentLoader;
 import net.azisaba.lgw.presents.utils.Chat;
+import net.azisaba.lgw.presents.utils.TextInputOpener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,12 +31,13 @@ import java.util.List;
 public class Presents extends JavaPlugin {
 
     private static TaskChainFactory taskChainFactory;
-    // ロードされたプレゼントを格納するインスタンス
     private PresentContainer container;
-    // プレゼントを作成するインスタンス
     private PresentFactory factory;
-    // プレゼントをロードするインスタンス
     private PresentLoader loader;
+    private HeadContainer headContainer;
+    private GUIOpenSupporter guiOpenSupporter;
+
+    private InventoryManager inventoryManager;
 
     public static <T> TaskChain<T> newChain() {
         return taskChainFactory.newChain();
@@ -44,6 +50,12 @@ public class Presents extends JavaPlugin {
     @Override
     public void onEnable() {
         taskChainFactory = BukkitTaskChainFactory.create(this);
+        inventoryManager = new InventoryManager(this);
+        guiOpenSupporter = new GUIOpenSupporter(this);
+        inventoryManager.init();
+        TextInputOpener.init(this);
+
+        headContainer = new HeadContainer(this).load();
 
         File folder = new File(getDataFolder(), "Presents");
 
@@ -56,6 +68,7 @@ public class Presents extends JavaPlugin {
         Bukkit.getPluginCommand("retrypresent").setExecutor(new RetryPresentCommand(container));
 
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(container), this);
+        Bukkit.getPluginManager().registerEvents(new TestListener(this), this);
 
         Bukkit.getLogger().info(getName() + " enabled.");
 
