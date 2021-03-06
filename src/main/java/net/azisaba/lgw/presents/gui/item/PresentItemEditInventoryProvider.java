@@ -34,10 +34,7 @@ public class PresentItemEditInventoryProvider implements InventoryProvider {
         if (randomBase64 == null) {
             randomBase64 = "";
         }
-        ItemStack skullSelectItem = ItemBuilder.createSkull(randomBase64);
-        ItemMeta meta = skullSelectItem.getItemMeta();
-        meta.setDisplayName(Chat.f("&cHeadを選択"));
-        skullSelectItem.setItemMeta(meta);
+        ItemStack skullSelectItem = ItemBuilder.createHead(randomBase64, Chat.f("&cHeadを選択"));
 
         if (item != null) {
             contents.set(1, 4, ClickableItem.empty(item));
