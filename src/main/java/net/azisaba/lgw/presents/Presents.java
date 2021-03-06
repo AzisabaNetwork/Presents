@@ -10,6 +10,7 @@ import net.azisaba.lgw.presents.command.RetryPresentCommand;
 import net.azisaba.lgw.presents.gui.GUIOpenSupporter;
 import net.azisaba.lgw.presents.head.HeadContainer;
 import net.azisaba.lgw.presents.listener.PlayerJoinListener;
+import net.azisaba.lgw.presents.listener.PresentItemSelectListener;
 import net.azisaba.lgw.presents.listener.TestListener;
 import net.azisaba.lgw.presents.present.PresentContainer;
 import net.azisaba.lgw.presents.present.PresentFactory;
@@ -69,6 +70,7 @@ public class Presents extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(container), this);
         Bukkit.getPluginManager().registerEvents(new TestListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new PresentItemSelectListener(inventoryManager), this);
 
         Bukkit.getLogger().info(getName() + " enabled.");
 

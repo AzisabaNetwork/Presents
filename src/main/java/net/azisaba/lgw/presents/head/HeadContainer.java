@@ -7,9 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class HeadContainer {
@@ -37,6 +35,14 @@ public class HeadContainer {
 
     public String getBase64(String key) {
         return base64Map.getOrDefault(key, null);
+    }
+
+    public Set<String> getAllKeys() {
+        return base64Map.keySet();
+    }
+
+    public Collection<String> getAllBase64() {
+        return base64Map.values();
     }
 
     public String getRandomBase64() {

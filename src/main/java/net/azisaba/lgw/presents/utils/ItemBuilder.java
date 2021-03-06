@@ -1,7 +1,9 @@
 package net.azisaba.lgw.presents.utils;
 
+import com.cryptomorin.xseries.XMaterial;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -29,8 +31,22 @@ public class ItemBuilder {
         return create(material, false, displayName, lore);
     }
 
+    public static ItemStack create(XMaterial material, String displayName, String... lore) {
+        return create(material, false, displayName, lore);
+    }
+
     public static ItemStack create(Material material, boolean enchanted, String displayName, String... lore) {
         ItemStack item = new ItemStack(material);
+        return apply(item, enchanted, displayName, lore);
+    }
+
+    public static ItemStack create(XMaterial material, boolean enchanted, String displayName, String... lore) {
+        if (!material.isSupported()) {
+            return null;
+        }
+        ItemStack item = material.parseItem();
+        assert item != null : "The item must be non-null because " + material.name() + " is supported on this version.";
+
         return apply(item, enchanted, displayName, lore);
     }
 
@@ -39,12 +55,30 @@ public class ItemBuilder {
         return apply(item, false, displayName, lore);
     }
 
+    @Deprecated
     public static ItemStack createItemWithData(Material material, int data, String displayName, String... lore) {
         ItemStack item = getItemStackWithoutWarning(material, data);
         if (item == null) {
             return null;
         }
         return apply(item, false, displayName, lore);
+    }
+
+    public static void copyDisplayNameAndLore(ItemStack in, ItemStack out) {
+        if (in == null || out == null || !in.hasItemMeta() || !out.hasItemMeta()) {
+            return;
+        }
+        ItemMeta inMeta = in.getItemMeta();
+        ItemMeta outMeta = out.getItemMeta();
+
+        if (inMeta.hasDisplayName()) {
+            outMeta.setDisplayName(inMeta.getDisplayName());
+        }
+        if (inMeta.hasLore()) {
+            outMeta.setLore(inMeta.getLore());
+        }
+
+        out.setItemMeta(outMeta);
     }
 
     public static ItemStack createSkull() {
@@ -79,6 +113,9 @@ public class ItemBuilder {
         ItemMeta meta = item.getItemMeta();
 
         if (displayName != null) {
+            if (displayName.equals("")) {
+                displayName = ChatColor.RESET + "";
+            }
             meta.setDisplayName(displayName);
         }
         if (lore != null && lore.length > 0) {
