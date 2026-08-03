@@ -26,7 +26,10 @@ import net.azisaba.lgw.presents.utils.Chat;
 
 import lombok.RequiredArgsConstructor;
 
-import me.rayzr522.jsonmessage.JSONMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
 
 /**
  * /presentコマンドを実行するクラス
@@ -42,18 +45,33 @@ public class PresentCommand implements CommandExecutor {
     private final HashMap<UUID, PresentBuilder> builders = new HashMap<>();
 
     private final List<String> correctArgs = Arrays.asList("date", "command", "commands", "mode");
-    private final JSONMessage helpMessage = JSONMessage.create(Chat.f("&b&m{0}", Strings.repeat("━", 50))).newline()
-            .then(Chat.f("&e/present list &7- &aプレゼントのリストを表示します")).suggestCommand("/present list").newline()
-            .then(Chat.f("&e/present info <名前> &7- &aプレゼントの詳細を表示します")).suggestCommand("/present info ").newline()
-            .then(Chat.f("&e/present create <名前> &7- &aビルダーを作成します")).suggestCommand("/present create ").newline()
-            .then(Chat.f("&e/present delete <名前> &7- &aプレゼントを削除します")).suggestCommand("/present delete ").newline()
-            .then(Chat.f("&e/present build &7- &aビルダーからプレゼントを作成します")).suggestCommand("/present build").newline()
-            .then(Chat.f("&e/present name <名前> &7- &aプレゼント名を変更します")).suggestCommand("/present name ").newline()
-            .then(Chat.f("&e/present date <yyyy/MM/dd hh:mm:ss> &7- &a日付を指定します")).suggestCommand("/present date ").newline()
-            .then(Chat.f("&e/present mode <&cAll&e/&cOnline&e/&cOffline&e> &7- &aモードを指定します")).suggestCommand("/present mode ").newline()
-            .then(Chat.f("&e/present slot <必要スロット数> &7- &a受け取りに必要な空き数を指定します")).suggestCommand("/present slot ").newline()
-            .then(Chat.f("&e/present command <&cadd&e/&cremove&e> <&ccmd&e/&cindex&e> &7- &aコマンドを変更します")).suggestCommand("/present command ").newline()
-            .then(Chat.f("&b&m{0}", Strings.repeat("━", 50)));
+    private final BaseComponent[] helpMessage = buildHelpMessage();
+
+    private static BaseComponent[] buildHelpMessage() {
+        ComponentBuilder builder = new ComponentBuilder("");
+        builder.append(TextComponent.fromLegacyText(Chat.f("&b&m{0}\n", Strings.repeat("━", 50))));
+        addHelpLine(builder, "&e/present list &7- &aプレゼントのリストを表示します\n", ClickEvent.Action.SUGGEST_COMMAND, "/present list");
+        addHelpLine(builder, "&e/present info <名前> &7- &aプレゼントの詳細を表示します\n", ClickEvent.Action.SUGGEST_COMMAND, "/present info ");
+        addHelpLine(builder, "&e/present create <名前> &7- &aビルダーを作成します\n", ClickEvent.Action.SUGGEST_COMMAND, "/present create ");
+        addHelpLine(builder, "&e/present delete <名前> &7- &aプレゼントを削除します\n", ClickEvent.Action.SUGGEST_COMMAND, "/present delete ");
+        addHelpLine(builder, "&e/present build &7- &aビルダーからプレゼントを作成します\n", ClickEvent.Action.SUGGEST_COMMAND, "/present build");
+        addHelpLine(builder, "&e/present name <名前> &7- &aプレゼント名を変更します\n", ClickEvent.Action.SUGGEST_COMMAND, "/present name ");
+        addHelpLine(builder, "&e/present date <yyyy/MM/dd hh:mm:ss> &7- &a日付を指定します\n", ClickEvent.Action.SUGGEST_COMMAND, "/present date ");
+        addHelpLine(builder, "&e/present mode <&cAll&e/&cOnline&e/&cOffline&e> &7- &aモードを指定します\n", ClickEvent.Action.SUGGEST_COMMAND, "/present mode ");
+        addHelpLine(builder, "&e/present slot <必要スロット数> &7- &a受け取りに必要な空き数を指定します\n", ClickEvent.Action.SUGGEST_COMMAND, "/present slot ");
+        addHelpLine(builder, "&e/present command <&cadd&e/&cremove&e> <&ccmd&e/&cindex&e> &7- &aコマンドを変更します\n", ClickEvent.Action.SUGGEST_COMMAND, "/present command ");
+        builder.append(TextComponent.fromLegacyText(Chat.f("&b&m{0}", Strings.repeat("━", 50))));
+        return builder.create();
+    }
+
+    private static void addHelpLine(ComponentBuilder builder, String text, ClickEvent.Action action, String command) {
+        BaseComponent[] components = TextComponent.fromLegacyText(Chat.f(text));
+        ClickEvent clickEvent = new ClickEvent(action, command);
+        for (BaseComponent component : components) {
+            component.setClickEvent(clickEvent);
+            builder.append(component);
+        }
+    }
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -170,9 +188,16 @@ public class PresentCommand implements CommandExecutor {
 
             Present present = builder.create();
             if ( present != null ) {
-                JSONMessage.create(Chat.f("&aプレゼントの作成に成功しました。"))
-                        .then(Chat.f("&e[ここ]")).runCommand("/present info " + present.getName())
-                        .then(Chat.f("&aをクリックで確認！")).send(p);
+                ComponentBuilder msg = new ComponentBuilder("");
+                msg.append(TextComponent.fromLegacyText(Chat.f("&aプレゼントの作成に成功しました。")));
+                BaseComponent[] link = TextComponent.fromLegacyText(Chat.f("&e[ここ]"));
+                ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/present info " + present.getName());
+                for (BaseComponent component : link) {
+                    component.setClickEvent(clickEvent);
+                    msg.append(component);
+                }
+                msg.append(TextComponent.fromLegacyText(Chat.f("&aをクリックで確認！")));
+                p.spigot().sendMessage(msg.create());
                 builders.remove(p.getUniqueId());
             } else {
                 p.sendMessage(Chat.f("&cプレゼントの作成に失敗しました。"));
@@ -193,7 +218,7 @@ public class PresentCommand implements CommandExecutor {
             if ( args[1].equalsIgnoreCase("add") ) {
                 String cmd = String.join(" ", args).substring(args[0].length() + args[1].length() + 2);
                 builder.getCommands().add(cmd);
-                getCommandViewer(label, builder.getCommands()).send(p);
+                p.spigot().sendMessage(getCommandViewer(label, builder.getCommands()));
             } else if ( args[1].equalsIgnoreCase("remove") ) {
                 int number = -1;
 
@@ -205,7 +230,7 @@ public class PresentCommand implements CommandExecutor {
                 }
 
                 builder.getCommands().remove(number);
-                getCommandViewer(label, builder.getCommands()).send(p);
+                p.spigot().sendMessage(getCommandViewer(label, builder.getCommands()));
             } else {
                 p.sendMessage(Chat.f("&c2つ目の引数は&eadd&cか&eremove&cを指定してください"));
             }
@@ -268,25 +293,31 @@ public class PresentCommand implements CommandExecutor {
         return true;
     }
 
-    private JSONMessage getCommandViewer(String label, List<String> commands) {
-        JSONMessage msg = JSONMessage.create(Chat.f("&b&m{0}", Strings.repeat("━", 50))).newline();
+    private BaseComponent[] getCommandViewer(String label, List<String> commands) {
+        ComponentBuilder msg = new ComponentBuilder("");
+        msg.append(TextComponent.fromLegacyText(Chat.f("&b&m{0}\n", Strings.repeat("━", 50))));
         for ( int i = 0; i < commands.size(); i++ ) {
             String cmd = formatCommand(commands.get(i), ChatColor.LIGHT_PURPLE);
-            msg.then(Chat.f("&e{0}&a: &d{1} ", i + 1, cmd));
-            msg.then(Chat.f("&c[-]")).runCommand(Chat.f("/{0} command remove {1}", label, i));
-            msg.newline();
+            msg.append(TextComponent.fromLegacyText(Chat.f("&e{0}&a: &d{1} ", i + 1, cmd)));
+            BaseComponent[] removeBtn = TextComponent.fromLegacyText(Chat.f("&c[-]"));
+            ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, Chat.f("/{0} command remove {1}", label, i));
+            for (BaseComponent component : removeBtn) {
+                component.setClickEvent(clickEvent);
+                msg.append(component);
+            }
+            msg.append(TextComponent.fromLegacyText("\n"));
         }
 
         if ( commands.size() <= 0 ) {
-            msg.then(Chat.f("&cなし")).newline();
+            msg.append(TextComponent.fromLegacyText(Chat.f("&cなし\n")));
         }
-        msg.then(Chat.f("&b&m{0}", Strings.repeat("━", 50)));
+        msg.append(TextComponent.fromLegacyText(Chat.f("&b&m{0}", Strings.repeat("━", 50))));
 
-        return msg;
+        return msg.create();
     }
 
     private void sendHelpMessage(Player p) {
-        helpMessage.send(p);
+        p.spigot().sendMessage(helpMessage);
     }
 
     private String formatCommand(String cmd, ChatColor defaultColor) {

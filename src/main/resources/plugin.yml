@@ -2,7 +2,7 @@ name: ${project.name}
 main: net.azisaba.lgw.presents.Presents
 version: ${project.version}
 description: ${project.description}
-authosr: ["siloneco"]
+authors: ["siloneco"]
 commands:
   present:
     usage: /present
